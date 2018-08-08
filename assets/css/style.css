@@ -29,10 +29,11 @@ input {
 }
 
 #app {
+	position: relative;
 	width: 100%;
 	height: 100%;
 	background-color: white;
-	overflow: hidden;
+	overflow-x: auto;
 }
 
 @media screen and (min-width: 768px) {
@@ -41,11 +42,21 @@ input {
 		height: 75vh !important;
 		border-radius: 5px;
 		box-shadow: 0 0 50px rgba(0,0,0, .35);
+		overflow: hidden;
 	}
 }
 
 .search {
 	border-bottom: 3px solid #eee;
+}
+
+@media screen and (max-width: 768px) {
+	.search {
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+	}
 }
 
 .search input {
@@ -59,6 +70,15 @@ table {
 	width: 100%;
 	border-collapse: collapse;
 	overflow-y: scroll;
+}
+
+@media screen and (max-width: 768px) {
+	table {
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		right: 0;
+	}
 }
 
 table thead {
@@ -91,6 +111,7 @@ table td:first-child {
 
 table th:not(:first-child),
 table td:not(:first-child) {
+	min-width: 10rem;
 	text-align: left;
 	flex: 1;
 }
