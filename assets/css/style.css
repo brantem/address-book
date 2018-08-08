@@ -97,6 +97,11 @@ table tr {
 	border-bottom: 1px solid #eee;
 }
 
+table tbody tr:hover {
+	background-color: #fafafa;
+	cursor: pointer;
+}
+
 table th,
 table td {
 	padding: 1rem;
