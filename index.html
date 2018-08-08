@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Address Book</title>
+	<link rel="stylesheet" href="./assets/css/style.css">
+</head>
+<body class="centered">
+	<div id="app">
+		<div class="search">
+			<input type="text" placeholder="Search here">
+		</div>
+		<table>
+			<thead>
+				<tr>
+					<th>No</th>
+					<th>Name</th>
+					<th>Phone number</th>
+					<th>Address</th>
+				</tr>
+			</thead>
+			<tbody></tbody>
+		</table>
+	</div>
+	<div class="overlay">
+		<div class="close"></div>
+		<div class="form">
+			<input type="text" name="name" placeholder="Name">
+			<input type="text" name="phone_number" placeholder="Phone number">
+			<input type="text" name="address" placeholder="Address">
+			<button>+</button>
+		</div>
+	</div>
+	<button class="button-form">+</button>
+	<script src="./assets/js/main.js"></script>
+</body>
+</html>
