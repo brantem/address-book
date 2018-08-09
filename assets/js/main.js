@@ -4,34 +4,147 @@ const buttonForm = document.querySelector('.button-form')
 const overlay = document.querySelector('.overlay')
 
 const form = overlay.querySelector('.form')
-const inputs = form.querySelectorAll('input')
-const inputName = document.getElementsByName('name')[0]
-const inputPhoneNumber = document.getElementsByName('phone_number')[0]
-const inputAddress = document.getElementsByName('address')[0]
-const inputEmail = document.getElementsByName('email')[0]
+const inputs = [].slice.call(form.querySelectorAll('input'))
 const buttonSubmit = form.querySelector('button')
+
+let currentAction
+let currentAddress
 
 renderAddresses(getAddresses())
 
 search.addEventListener('input', function (e) {
-  const addresses = getAddresses()
+  const address = searchAddress(this.value)
 
-	const filteredAddress = addresses.filter(address => {
-    for (const key in address) {
-      if (address[key].toLowerCase().includes(this.value.toLowerCase())) return address
-		}
-	})
-
-	const rows = tbody.querySelectorAll('tr').forEach(row => row.remove())
-
-	renderAddresses(filteredAddress)
+	renderAddresses(address)
 })
 
-inputEmail.addEventListener('keyup', e => e.keyCode == 13 ? insertAddress() : false) // insert address on enter
-form.querySelector('button').addEventListener('click', insertAddress) // insert address
-buttonForm.addEventListener('click', showForm) // show form
-overlay.querySelector('.close').addEventListener('click', hideForm) // hide form
-document.body.addEventListener('keydown', e => e.keyCode == 27 ? hideForm() : false) // hide form
+buttonForm.addEventListener('click', () => {
+  currentAction = 'insert'
+  showForm()
+})
+
+document.body.addEventListener('keydown', e => {
+  switch (e.keyCode) {
+    case 13:
+      if (isAllInputsNotEmpty()) {
+        onSubmit()
+      }
+      break
+    case 27:
+      hideForm()
+      break
+  }
+})
+
+buttonSubmit.addEventListener('click', onSubmit)
+
+function onSubmit () {
+  switch (currentAction) {
+    case 'insert':
+      insertAddress(getUserInput())
+      break
+    case 'update':
+      updateAddress(currentAddress, getUserInput())
+      break
+  }
+
+  hideForm()
+  renderAddresses(getAddresses())
+}
+
+function isAllInputsNotEmpty () {
+  const emptyInput = inputs.find(input => input.value === '')
+
+  if (emptyInput === undefined) {
+    return true
+  } else {
+    return false
+  }
+}
+
+function getUserInput () {
+  if (isAllInputsNotEmpty()) {
+    let data = {}
+
+    for (const input of inputs) {
+      const key = input.getAttribute('name')
+
+      data[key] = input.value
+    }
+
+    return data
+  }
+}
+
+function renderAddresses (addresses) {
+  tbody.querySelectorAll('tr').forEach(row => row.remove())
+
+  addresses.forEach((address, index) => {
+    appendAddress(index+1, address)
+  })
+}
+
+function appendAddress (number, address) {
+  const row = document.createElement('tr')
+  const numberTd = document.createElement('td')
+
+  numberTd.innerText = number
+
+  row.appendChild(numberTd)
+
+  for (const key in address) {
+    const td = document.createElement('td')
+
+    td.innerText = address[key]
+
+    row.appendChild(td)
+  }
+
+  row.appendChild(generateActionButton(address))
+
+  tbody.appendChild(row)
+}
+
+function generateActionButton (address) {
+  const td = document.createElement('td')
+
+  for (const actionType of ['Update', 'Delete']) {
+    const button = document.createElement('button')
+
+    button.innerText = actionType
+    button.classList.add(`button-${actionType.toLowerCase()}`)
+
+    button.addEventListener('click', () => action(actionType.toLowerCase(), address))
+
+    td.appendChild(button)
+  }
+
+  return td
+}
+
+function action (actionType, address) {
+  currentAddress = address
+
+  switch (actionType) {
+    case 'update':
+      currentAction = 'update'
+      showForm(address)
+      break
+    case 'delete':
+      currentAction = 'delete'
+      deleteAddress(address)
+      renderAddresses(getAddresses())
+      break
+  }
+}
+
+function insertAddress (address) {
+  const addresses = getAddresses()
+
+  window.localStorage.setItem('addresses', JSON.stringify({ addresses: [...addresses, address]}))
+
+  currentAction = ''
+}
 
 function getAddresses () {
   const data = JSON.parse(window.localStorage.getItem('addresses'))
@@ -43,65 +156,66 @@ function getAddresses () {
   return data.addresses
 }
 
-function insertAddress () {
-  const name = inputName.value
-  const phoneNumber = inputPhoneNumber.value
-  const address = inputAddress.value
-  const email = inputEmail.value
+function generateNewNumber () {
+  return getAddresses().length
+}
 
-  if (inputName.value !== '' || inputPhoneNumber.value !== '' || inputAddress.value !== '' || inputEmail.value !== '') {
-    const addresses = getAddresses()
-    const newAddress = { name, phoneNumber, address, email }
+function updateAddress ({ phoneNumber }, updatedAddress) {
+  const addresses = getAddresses()
 
-    window.localStorage.setItem('addresses', JSON.stringify({ addresses: [...addresses, newAddress]}))
+  const addressIndex = addresses.findIndex(address => address.phoneNumber === phoneNumber)
 
-    appendAddress(getAddresses().length, name, phoneNumber, address, email)
+  addresses.splice(addressIndex, 1, updatedAddress)
 
-    hideForm()
+  window.localStorage.setItem('addresses', JSON.stringify({ addresses }))
+  currentAction = ''
+  currentAddress = {}
+}
+
+function deleteAddress ({ phoneNumber }) {
+  const addresses = getAddresses()
+
+  const addressIndex = addresses.findIndex(address => address.phoneNumber === phoneNumber)
+
+  addresses.splice(addressIndex, 1)
+
+  window.localStorage.setItem('addresses', JSON.stringify({ addresses }))
+  currentAction = ''
+  currentAddress = {}
+}
+
+function searchAddress (query) {
+  const addresses = getAddresses()
+
+  const filteredAddress = addresses.filter(address => {
+    for (const key in address) {
+      if (address[key].toLowerCase().includes(query.toLowerCase())) return address
+    }
+  })
+
+  return filteredAddress
+}
+
+function showForm (address) {
+  if (address !== undefined) {
+    for (const input of inputs) {
+      const key = input.getAttribute('name')
+
+      input.value = address[key]
+    }
   }
-}
 
-function renderAddresses (addresses) {
-	for (var i = 0; i < addresses.length; i++) {
-		appendAddress(i+1, ...Object.values(addresses[i]))
-	}
-}
-
-function appendAddress (number, name, phoneNumber, address, email) {
-  const row = document.createElement('tr')
-  const numberData = document.createElement('td')
-  const nameData = document.createElement('td')
-  const phoneNumberData = document.createElement('td')
-  const addressData = document.createElement('td')
-  const emailData = document.createElement('td')
-
-  numberData.innerText = number
-  phoneNumberData.innerText = phoneNumber
-  nameData.innerText = name
-  addressData.innerText = address
-  emailData.innerText = email
-
-  row.appendChild(numberData)
-  row.appendChild(nameData)
-  row.appendChild(phoneNumberData)
-  row.appendChild(addressData)
-  row.appendChild(emailData)
-
-  tbody.appendChild(row)
-}
-
-function showForm () {
   overlay.style.display = 'flex'
   setTimeout(() => {
     overlay.style.opacity = 1
-	}, 0)
+  }, 0)
 }
 
 function hideForm () {
-
   overlay.style.opacity = 0
+
   setTimeout(() => {
     overlay.style.display = 'none'
     inputs.forEach(input => input.value = '')
-	}, 300)
+  }, 300)
 }
