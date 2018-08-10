@@ -111,8 +111,14 @@ function generateActionButton (address) {
   for (const actionType of ['Update', 'Delete']) {
     const button = document.createElement('button')
 
-    button.innerText = actionType
+    // button.innerText = actionType
     button.classList.add(`button-${actionType.toLowerCase()}`)
+
+    const img = document.createElement('img')
+
+    img.setAttribute('src', `./assets/img/${actionType.toLowerCase()}.svg`)
+
+    button.appendChild(img)
 
     button.addEventListener('click', () => action(actionType.toLowerCase(), address))
 
