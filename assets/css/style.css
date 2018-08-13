@@ -179,7 +179,7 @@ table button img {
 	font-size: 2rem;
 	cursor: pointer;
 	box-shadow: 0 5px 50px rgba(0,0,0, .35);
-	margin-top: 1rem;
+	margin-top: 1.5rem;
 	transition: .2s ease;
 }
 
@@ -187,8 +187,6 @@ table button img {
 	.button-group button {
 		background-color: white;
 		color: #EF5753;
-		bottom: 2.5rem;
-		right: 2.5rem;
 	}
 }
 
