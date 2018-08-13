@@ -1,6 +1,7 @@
 const tbody = document.querySelector('tbody')
 const search = document.querySelector('.search input')
-const buttonForm = document.querySelector('.button-form')
+const buttonClear = document.querySelector('.button-clear')
+const buttonAdd = document.querySelector('.button-add')
 const overlay = document.querySelector('.overlay')
 
 const form = overlay.querySelector('.form')
@@ -18,9 +19,15 @@ search.addEventListener('input', function (e) {
 	renderAddresses(address)
 })
 
-buttonForm.addEventListener('click', () => {
+buttonAdd.addEventListener('click', () => {
   currentAction = 'insert'
   showForm()
+})
+
+buttonClear.addEventListener('click', () => {
+  clearAddresses()
+
+  renderAddresses(getAddresses())
 })
 
 document.body.addEventListener('keydown', e => {
@@ -188,6 +195,10 @@ function deleteAddress ({ phoneNumber }) {
   window.localStorage.setItem('addresses', JSON.stringify({ addresses }))
   currentAction = ''
   currentAddress = {}
+}
+
+function clearAddresses () {
+  window.localStorage.removeItem('addresses')
 }
 
 function searchAddress (query) {
