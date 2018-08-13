@@ -146,6 +146,7 @@ table button {
 	width: 50%;
 	border: 0;
 	background-color: transparent;
+	color: #EF5754;
 }
 
 table button:hover {
@@ -174,7 +175,7 @@ table button img {
 	height: 4rem;
 	width: 4rem;
 	border: 0;
-	background-color: #EF5753;
+	background-color: #EF5754;
 	color: white;
 	font-size: 2rem;
 	cursor: pointer;
@@ -186,7 +187,7 @@ table button img {
 @media screen and (min-width: 768px) {
 	.button-group button {
 		background-color: white;
-		color: #EF5753;
+		color: #EF5754;
 	}
 }
 

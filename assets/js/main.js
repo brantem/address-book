@@ -118,14 +118,13 @@ function generateActionButton (address) {
   for (const actionType of ['Update', 'Delete']) {
     const button = document.createElement('button')
 
-    // button.innerText = actionType
     button.classList.add(`button-${actionType.toLowerCase()}`)
 
-    const img = document.createElement('img')
+    const i = document.createElement('i')
 
-    img.setAttribute('src', `./assets/img/${actionType.toLowerCase()}.svg`)
+    i.classList.add('fas', `fa-${actionType === 'Update' ? 'pen' : 'trash'}`)
 
-    button.appendChild(img)
+    button.appendChild(i)
 
     button.addEventListener('click', () => action(actionType.toLowerCase(), address))
 
