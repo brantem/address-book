@@ -140,6 +140,10 @@ function action (actionType, address) {
   switch (actionType) {
     case 'update':
       currentAction = 'update'
+      const buttonSubmitIcon = buttonSubmit.querySelector('i')
+
+      buttonSubmitIcon.classList.remove('fa-plus')
+      buttonSubmitIcon.classList.add('fa-pen')
       showForm(address)
       break
     case 'delete':
@@ -182,6 +186,9 @@ function updateAddress ({ phoneNumber }, updatedAddress) {
   window.localStorage.setItem('addresses', JSON.stringify({ addresses }))
   currentAction = ''
   currentAddress = {}
+
+  buttonSubmitIcon.classList.remove('fa-pen')
+  buttonSubmitIcon.classList.add('fa-plus')
 }
 
 function deleteAddress ({ phoneNumber }) {
